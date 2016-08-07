@@ -1,0 +1,7 @@
+{{ $baseurl := .Site.BaseURL }}
+<p>
+    <sup>
+        Created <time datetime='{{ $.Date.Format "2006-01-02" }}' class="post-list timeago">{{$.Date.Format "2006-01-02T15:04:05Z07:00"}}</time>
+        {{if $.Params.tags}} with {{end}} {{with $.Params.tags}} tags: [{{range $.Params.tags}}<a href="{{ $baseurl }}tags/{{ . | urlize }}">{{ . }}</a>{{end}}]{{end}}
+    </sup>
+</p>

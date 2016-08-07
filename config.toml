@@ -1,0 +1,15 @@
+baseurl = "https://ricjac.github.io/"
+languageCode = "en-au"
+title = "RICJAC"
+disqusShortname = "ricjac"
+googleAnalytics = "UA-81407550-1"
+publishdir = "public"
+copyright = "Creative Commons Attribution 4.0 International License"
+
+[Params]
+    highlight = "monokai"
+
+[Author]
+    name = "Richard Pierre"
+    github = "ricjac"
+    googleplus = "RichardPierre"

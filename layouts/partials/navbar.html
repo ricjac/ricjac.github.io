@@ -1,0 +1,12 @@
+{{ $baseurl := .Site.BaseURL }}
+<div class="header clearfix">
+    <nav>
+        <ul class="nav nav-pills pull-right">
+            {{range $name,$page := .Site.Taxonomies.categories}}
+            <li role="presentation"><a href="{{ $baseurl }}categories/{{ $name | urlize }}">{{ $name | title }}</a></li>
+            {{end}}
+            <li role="presentation"><a href="{{ $baseurl }}site/about/">About</a></li>
+        </ul>
+    </nav>
+    <h3 class="text-muted"><a href="{{$baseurl}}">{{.Site.Title}}</a></h3>
+</div>

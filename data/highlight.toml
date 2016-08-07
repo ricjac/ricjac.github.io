@@ -1,0 +1,6 @@
+languages = [
+    "cs",
+    "fsharp",
+    "bash",
+    "ini"
+]

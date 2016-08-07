@@ -1,0 +1,17 @@
+{{ partial "header.html" . }} {{ partial "navbar.html" . }} {{$baseurl := .Site.BaseURL}}
+
+<div class="content">
+    <div class="post">
+        <div class="post-title">
+            <h1>{{.Title}}</h1>
+            {{partial "post-footnote.html" .}}
+        </div>
+
+        <div class="post-content">
+            {{.TableOfContents}} {{.Content}}
+        </div>
+    </div>
+    {{partial "disqus.html" .}}
+</div>
+
+{{partial "footer.html" .}}
