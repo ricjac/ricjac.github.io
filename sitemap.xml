@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://ricjac.github.io/cryptocurrency/btc-testnet-security/</loc>
+    <lastmod>2017-12-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/cryptocurrency/btc-testnet/</loc>
+    <lastmod>2017-12-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/blog/fshapr-analysing-superannuation/</loc>
+    <lastmod>2016-09-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/blog/fsharp-hello-functional-world/</loc>
+    <lastmod>2016-09-13T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/blog/fsharp-exercise1/</loc>
+    <lastmod>2016-08-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/blog/fsharp-collections-list/</loc>
+    <lastmod>2016-07-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/blog/first-post/</loc>
+    <lastmod>2016-07-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/site/about/</loc>
+    <lastmod>2016-07-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/categories/blog/</loc>
+    <lastmod>2016-09-14T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/blog/</loc>
+    <lastmod>2016-09-14T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/categories/</loc>
+    <lastmod>2016-09-14T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/cryptocurrency/</loc>
+    <lastmod>2017-12-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/categories/cryptocurrency/</loc>
+    <lastmod>2017-12-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/</loc>
+    <lastmod>2017-12-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/site/</loc>
+    <lastmod>2016-07-26T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://ricjac.github.io/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

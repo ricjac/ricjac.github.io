@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on RICJAC</title>
+    <link>https://ricjac.github.io/categories/blog/</link>
+    <description>Recent content in Blog on RICJAC</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-au</language>
+    <copyright>Creative Commons Attribution 4.0 International License</copyright>
+    <lastBuildDate>Wed, 14 Sep 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://ricjac.github.io/categories/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Visualising Australian Super Performance with F#</title>
+      <link>https://ricjac.github.io/blog/fshapr-analysing-superannuation/</link>
+      <pubDate>Wed, 14 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://ricjac.github.io/blog/fshapr-analysing-superannuation/</guid>
+      <description>Australian Super Performance graphs are available on their website, but just as a simple exercise, lets replicate their graph, using FSharp.Charting.
+Graph generated from Australian Super Website Below is a screenshot of the associated cumulative % change for the period, for the investments shown in the graph above:
+First create a paket dependencies file:
+paket.dependencies
+source https://nuget.org/api/v2 nuget FSharp.Data nuget FSharp.Charting  Run the following command to generate an include script, so you only need to include 1 file, rather than all dependencies.</description>
+    </item>
+    
+    <item>
+      <title>Hello infinite functional world</title>
+      <link>https://ricjac.github.io/blog/fsharp-hello-functional-world/</link>
+      <pubDate>Tue, 13 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://ricjac.github.io/blog/fsharp-hello-functional-world/</guid>
+      <description>The &amp;lsquo;Hello world&amp;rsquo; of functional programming languages is a recursive function that returns a sequence of Fibonacci numbers.
+The implementation below returns an infinite F# sequence, using the type BigInteger, so that the sequence will only stop when the process runs out of memory.
+Maths.fs
+module NumberSequences = let fibonacci = let rec fibonacci&#39; (first: bigint) (second: bigint) = let next = first + second seq { yield next yield! fibonacci&#39; second next } seq { yield bigint(0) yield bigint(1) yield!</description>
+    </item>
+    
+    <item>
+      <title>F# Exercise: split a sequence of lot/plans</title>
+      <link>https://ricjac.github.io/blog/fsharp-exercise1/</link>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://ricjac.github.io/blog/fsharp-exercise1/</guid>
+      <description>This problem came up at work. Client would like to search for multiple lot plans, we want to allow them to enter multiple lots using a shorthand.
+A lot/plan follows this format: 234/RP12345
+The short hand for 234/RP12345 &amp;amp; 235/RP12345 is either of:
+ 234,235/RP12345 234-235/RP12345  Now lets say a property developer wants to search for these properties all at once:
+Screenshot taken from http://eatlas.org.au
+The property developer would enter 36-39,41,42/RP711798</description>
+    </item>
+    
+    <item>
+      <title>F# Collections: Lists</title>
+      <link>https://ricjac.github.io/blog/fsharp-collections-list/</link>
+      <pubDate>Sat, 30 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://ricjac.github.io/blog/fsharp-collections-list/</guid>
+      <description>F# lists are immutable collections.
+Initialising List of integers
+let x = [1;2;3] //val x : int list = [1; 2; 3]  List of integers, with values separated by new lines
+let x = [ 1 2 3 ] //val x : int list = [1; 2; 3]  From a range of integers
+let x = [1..3] //val x : int list = [1; 2; 3]  Using a for loop</description>
+    </item>
+    
+    <item>
+      <title>First post</title>
+      <link>https://ricjac.github.io/blog/first-post/</link>
+      <pubDate>Wed, 27 Jul 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://ricjac.github.io/blog/first-post/</guid>
+      <description>This is the first post using the Hugo static site generator.
+open System [&amp;lt;EntryPoint&amp;gt;] let main argv = printfn &amp;quot;Hello World&amp;quot; Console.ReadLine() |&amp;gt; ignore 0  </description>
+    </item>
+    
+  </channel>
+</rss>

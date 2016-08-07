@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="icon" href="../../favicon.ico">
+  <meta name="description" content="F# Exercise: split a sequence of lot/plans">
+  <meta name="author" content="Richard Pierre">
+
+  <title>F# Exercise: split a sequence of lot/plans</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+
+  
+  <link href="https://ricjac.github.io//css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/cs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/fsharp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/ini.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  
+  <link rel="stylesheet" href="https://ricjac.github.io//css/site.css">
+</head>
+
+<body>
+  <div class="container"> 
+<div class="header clearfix">
+    <nav>
+        <ul class="nav nav-pills pull-right">
+            
+            <li role="presentation"><a href="https://ricjac.github.io/categories/blog">Blog</a></li>
+            
+            <li role="presentation"><a href="https://ricjac.github.io/categories/cryptocurrency">Cryptocurrency</a></li>
+            
+            <li role="presentation"><a href="https://ricjac.github.io/site/about/">About</a></li>
+        </ul>
+    </nav>
+    <h3 class="text-muted"><a href="https://ricjac.github.io/">RICJAC</a></h3>
+</div> 
+
+<div class="content">
+    <div class="post">
+        <div class="post-title">
+            <h1>F# Exercise: split a sequence of lot/plans</h1>
+            
+<p>
+    <sup>
+        Created <time datetime='2016-08-01' class="post-list timeago">2016-08-01T00:00:00Z</time>
+         
+    </sup>
+</p>
+        </div>
+
+        <div class="post-content">
+             <p>This problem came up at work. Client would like to search for multiple lot plans, we want to allow them to enter multiple lots using a shorthand.</p>
+
+<p>A lot/plan follows this format: <code>234/RP12345</code><br />
+The short hand for <code>234/RP12345 &amp; 235/RP12345</code> is either of:</p>
+
+<ul>
+<li><code>234,235/RP12345</code></li>
+<li><code>234-235/RP12345</code></li>
+</ul>
+
+<p>Now lets say a property developer wants to search for these properties all at once:<br />
+<img src="/images/LotPlanSplitExample.png" alt="alt text" title="Example of a group of Lot/Plans" /></p>
+
+<p><sup><a href="http://eatlas.org.au/content/qld-dnrm-property-boundaries">Screenshot taken from http://eatlas.org.au</a></sup></p>
+
+<p>The property developer would enter <code>36-39,41,42/RP711798</code><br />
+And they&rsquo;d expect the following lots: <code>36,37,38,39,41,42</code></p>
+
+<p>Here&rsquo;s my solution using F#:</p>
+
+<pre><code class="language-fsharp">open System.Text.RegularExpressions
+
+let (|RegexMatch|_|) pattern input =
+    let m = Regex.Match(input, pattern) 
+    if (m.Success) then Some input else None
+
+let parseRange (rangeStr: string) =
+    let rangeSplit = rangeStr.Split('-')
+    let range = [rangeSplit.[0] |&gt; int .. rangeSplit.[1] |&gt; int]
+    range
+
+let parseStr (part: string) =
+    match part with
+    | RegexMatch @&quot;^\d+$&quot; x -&gt; [x |&gt; int]
+    | RegexMatch @&quot;^(\d+)-(\d+)$&quot; x -&gt; parseRange x
+    | x -&gt; failwith (&quot;unknown part: &quot; + x)
+
+let rec splitNumbers (numbers: string list) =
+    match numbers with
+    | [] -&gt; []
+    | head::tail -&gt; parseStr head @ splitNumbers tail
+
+let splitLots x = 
+    x.Replace(&quot; &quot;, &quot;&quot;).Split(',') |&gt; Seq.toList |&gt; splitNumbers
+
+splitLots &quot;1,2,5-7,10-12&quot;
+//val it : int list = [36; 37; 38; 39; 41; 42]
+</code></pre>
+
+<p>Here&rsquo;s my C# implementation:</p>
+
+<pre><code class="language-cs">void Main()
+{
+    var x = &quot;1,2,5-7&quot;;
+    SplitLots(x).Dump();
+}
+
+int[] SplitLots(string lots)
+{
+    var parts = lots.Replace(&quot; &quot;, &quot;&quot;).Split(',');
+    return parts.SelectMany(x =&gt;
+    {
+        if (Regex.Match(x, @&quot;^\d+$&quot;).Success) return new[] { int.Parse(x) };
+        if (Regex.Match(x, @&quot;^(\d+)-(\d+)$&quot;).Success) return ParseStr(x);
+        else throw new Exception($&quot;unknown part: $x&quot;);
+    }).ToArray();
+}
+
+int[] ParseStr(string lots) 
+{
+    var splitLots = lots.Split('-');
+    var start = int.Parse(splitLots[0]);
+    var end = int.Parse(splitLots[1]);
+    return Enumerable.Range(start, end - start + 1).ToArray();
+}
+</code></pre>
+
+<p>I&rsquo;m a little disappointed my F# solution consisted of more code. To my defence, I developed the F# solution first, so the C# solution turned out very similar, but with shortcuts, also I&rsquo;m primarily a C# developer.</p>
+
+<p>I&rsquo;d be interested to see how others approached this problem, so feel free to post your solution in the comments below (or a link to your Gist).</p>
+
+        </div>
+    </div>
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'ricjac';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+</div>
+
+<footer class="footer">
+  <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/4.0/">(CC BY 4.0)</a> <span>Richard Pierre</span>
+  <a href="#" class="pull-right" id="gototop-btn">↑↑</a>
+</footer>
+
+</div>
+
+
+
+<script src="https://ricjac.github.io//js/ie10-viewport-bug-workaround.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.5.3/jquery.timeago.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+  $(function(){
+    $("time.timeago").timeago();
+  })
+  $("#toggle-btn").click(function(){
+    $("#toggle-content").toggle();
+    if($(this).html() === "☰") {
+        $(this).html("X")
+    } else {
+        $(this).html("☰")
+    }
+  });
+  $(window).resize(function(){
+    if(window.innerWidth > 768) {
+      $(".desktop").removeAttr("style");
+    }
+  });
+</script> 
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-81407550-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+
+.container {
+    min-height: 100%;
+    position: relative;
+}
+
+.header {
+    padding-bottom: 0px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+}
+
+.footer {
+    border-top: 1px solid #e5e5e5;
+    position: relative;
+    margin-top: 25px;
+    bottom: 0;
+    clear: both;
+    width: 100%;
+}
+
+.marketing p + h4 {
+    margin-top: 28px;
+}
+
+.text-muted a {
+    text-decoration: none;
+}
+
+.marketing h4 {
+    margin-bottom: 0px;
+}
+
+.post-summary {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.post-content > pre {
+    padding: 0px;
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 730px;
+        width: 730px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    /* Remove the padding we set earlier */
+    .header, .marketing {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}

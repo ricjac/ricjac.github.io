@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="icon" href="../../favicon.ico">
+  <meta name="description" content="PART 1: How to setup a Bitcoin TestNet3 Full Node on Arch linux">
+  <meta name="author" content="Richard Pierre">
+
+  <title>PART 1: How to setup a Bitcoin TestNet3 Full Node on Arch linux</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+
+  
+  <link href="https://ricjac.github.io//css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/cs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/fsharp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/ini.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  
+  <link rel="stylesheet" href="https://ricjac.github.io//css/site.css">
+</head>
+
+<body>
+  <div class="container"> 
+<div class="header clearfix">
+    <nav>
+        <ul class="nav nav-pills pull-right">
+            
+            <li role="presentation"><a href="https://ricjac.github.io/categories/blog">Blog</a></li>
+            
+            <li role="presentation"><a href="https://ricjac.github.io/site/about/">About</a></li>
+        </ul>
+    </nav>
+    <h3 class="text-muted"><a href="https://ricjac.github.io/">RICJAC</a></h3>
+</div> 
+
+<div class="content">
+    <div class="post">
+        <div class="post-title">
+            <h1>PART 1: How to setup a Bitcoin TestNet3 Full Node on Arch linux</h1>
+            
+<p>
+    <sup>
+        Created <time datetime='2017-12-10' class="post-list timeago">2017-12-10T00:00:00Z</time>
+         
+    </sup>
+</p>
+        </div>
+
+        <div class="post-content">
+            <nav id="TableOfContents">
+<ul>
+<li><a href="#intro">Intro</a></li>
+<li><a href="#instructions">Instructions</a></li>
+<li><a href="#contents-of-files">Contents of files</a>
+<ul>
+<li><a href="#bitcoin-bitcoin-conf">~/.bitcoin/bitcoin.conf</a></li>
+<li><a href="#bashrc">~/.bashrc</a></li>
+<li><a href="#etc-systemd-system-btc-service">/etc/systemd/system/btc.service</a></li>
+</ul></li>
+</ul>
+</nav> 
+
+<h1 id="intro">Intro</h1>
+
+<p>If you are starting out in learning to program with/in the Bitcoin network, setting up a TestNet full node is a good place to start, and also provides some learning opportunities.</p>
+
+<p>For this exercise I used Linode to create a new Arch linux VM, but any <a href="https://wiki.archlinux.org/index.php/Virtual_Private_Server">Arch Linux VPS provider</a> will provide the same experience.</p>
+
+<p><sub>
+NOTE: This article was originally written for setting up a Raspberry PI 2, although the Bitcoin daemon ran, every hour or so the PI would crash/lock-up. and I wasn&rsquo;t able to find the cause. It was not overheating as I was monitoring the temperature at around 50 degree C (which seems normal).
+If you want to try this yourself on a RPi, you first need to load Arch linux on an SD card:
+</sub></p>
+
+<p><a href="https://archlinuxarm.org/platforms/armv7/broadcom/raspberry-pi-2">Arch linux ARM setup</a></p>
+
+<hr />
+
+<h1 id="instructions">Instructions</h1>
+
+<p>Begin by SSH-ing to the server - as root:</p>
+
+<pre><code class="language-bash"># where xxx.xxx.xxx.xxx is the IP address or host name of the server
+ssh root@xxx.xxx.xxx.xxx
+</code></pre>
+
+<p>update all packages, and install the Bitcoin daemon and CLI:</p>
+
+<pre><code class="language-bash">pacman -Syu
+pacman -S bitcoin-daemon bitcoin-cli
+</code></pre>
+
+<p>Create a service account which we&rsquo;ll use to run the Bitcoin daemon. Running your daemon with root credentials, which will have public TCP/UDP ports open to the internet is not advisable.</p>
+
+<pre><code class="language-bash">useradd btc
+passwd btc
+# enter password twice
+
+# create a home directory
+mkhomedir_helper btc
+</code></pre>
+
+<p>Next we&rsquo;ll need somewhere for the Bitcoin daemon to store the blockchain and other data:</p>
+
+<pre><code class="language-bash"># Create directory /btc
+mkdir /btc
+# Change owner of directory /btc to btc (user)
+chown btc: /btc
+# Modify permission of directory /btc for owner to have write access
+sudo chmod u+w /btc
+</code></pre>
+
+<p>Now, we&rsquo;ll switch to the btc user and setup the daemon configuration and setup some bash aliases:</p>
+
+<pre><code class="language-bash"># switch to btc service account
+su - btc
+# Create the directory that the Bitcoin daemon searches for a configuration file (if not specified)
+mkdir .bitcoin
+
+nano ~/.bitcoin/bitcoin.conf
+# paste config [See below]
+nano ~/.bashrc
+# paste aliases [See below]
+</code></pre>
+
+<p>That&rsquo;s all we need to do with the btc user.</p>
+
+<pre><code class="language-bash"># exit back to root
+exit
+</code></pre>
+
+<p>We now want to create a new systemd service, that starts automatically when the VM starts:</p>
+
+<pre><code class="language-bash"># the btc.service file doesn't exist yet, but nano will create it with the contents we paste into it
+nano /etc/systemd/system/btc.service
+# paste btc service definition [See below]
+
+# enable at system startup
+systemctl enable btc
+# start the Bitcoin service now
+systemctl start btc
+
+# Check it's running
+systemctl status btc
+</code></pre>
+
+<p>The Bitcoin daemon is running now, so let&rsquo;s query it with the CLI:</p>
+
+<pre><code class="language-bash"># switch to btc service account
+su - btc
+# Display network details
+btc-net
+# Display block details (index, blocks, ..)
+btc-block
+</code></pre>
+
+<p>NOTE: It may take up to a minute before the daemon will allow requests on startup, whether it&rsquo;s the first time or after it&rsquo;s been running for days. This message indicates it&rsquo;s loading the index, try again in a few moments:</p>
+
+<pre><code class="language-bash">error code: -28
+error message:
+Loading block index...
+</code></pre>
+
+<p>NOTE: It took about 2 hours for the node to catchup to the current height. And you&rsquo;ll need about 14GB of storage (as of the 10th December 2017):</p>
+
+<pre><code class="language-bash">[btc@localhost ~]$ du /btc -h
+898M    /btc/testnet3/chainstate
+369M    /btc/testnet3/blocks/index
+13G     /btc/testnet3/blocks
+14G     /btc/testnet3
+14G     /btc
+</code></pre>
+
+<p>Congratulations! You&rsquo;ve just setup a Bitcoin full node on TestNet3.</p>
+
+<p>Part 2 (coming soon) security and exposing an API for querying.</p>
+
+<p>Also: If you&rsquo;re interested in setting up RegTest node (local network with instant block mining) - see these <a href="https://bitcoin.org/en/developer-examples#regtest-mode">instructions</a></p>
+
+<hr />
+
+<h1 id="contents-of-files">Contents of files</h1>
+
+<h2 id="bitcoin-bitcoin-conf">~/.bitcoin/bitcoin.conf</h2>
+
+<p>All bitcoind configuration options are defined: <a href="https://en.bitcoin.it/wiki/Running_Bitcoin">here</a></p>
+
+<pre><code class="language-ini">##
+## bitcoin.conf configuration file. Lines beginning with # are comments.
+##
+
+# IMPORTANT: do not use the daemon's wallet
+disablewallet=1
+
+datadir=/btc
+
+# Network-related settings:
+
+# Run on the test network instead of the real bitcoin network.
+testnet=1
+
+# Listening mode, enabled by default except when 'connect' is being used. Port 18332 (TestNet3)
+listen=1
+
+#
+# JSON-RPC options (for controlling a running Bitcoin/bitcoind process)
+#
+
+# server=1 tells bitcoind to accept JSON-RPC commands
+server=1
+# Accept public REST requests (default: 0)
+rest=0
+# RPC username or password is not specified, so a cookie is written to the /btc/testnet3 directory for the CLI to use for auth
+</code></pre>
+
+<hr />
+
+<h2 id="bashrc">~/.bashrc</h2>
+
+<p>All bitcoin-cli options are defined: <a href="https://bitcoin.org/en/developer-reference#rpc-quick-reference">here</a></p>
+
+<pre><code class="language-bash">alias btc-start='bitcoind -daemon'
+alias btc-stop='bitcoin-cli stop'
+alias btc-block='bitcoin-cli getblockchaininfo'
+alias btc-net='bitcoin-cli getnetworkinfo'
+alias btc-mempool='bitcoin-cli getrawmempool'
+alias btc-mempoolall='bitcoin-cli getrawmempool true'
+</code></pre>
+
+<hr />
+
+<h2 id="etc-systemd-system-btc-service">/etc/systemd/system/btc.service</h2>
+
+<pre><code class="language-ini"># To edit use:
+# $ systemctl edit bitcoind.service
+# See &quot;man systemd.service&quot; for details.
+
+[Unit]
+Description=Bitcoin TestNet daemon
+After=network.target
+
+[Service]
+ExecStart=/bin/bitcoind -daemon
+# Creates /run/bitcoind owned by btc
+RuntimeDirectory=bitcoind
+# user can be a service account
+User=btc
+Type=forking
+PIDFile=/btc/testnet3/bitcoind.pid
+Restart=on-failure
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+        </div>
+    </div>
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'ricjac';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+</div>
+
+<footer class="footer">
+  <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/4.0/">(CC BY 4.0)</a> <span>Richard Pierre</span>
+  <a href="#" class="pull-right" id="gototop-btn">↑↑</a>
+</footer>
+
+</div>
+
+
+
+<script src="https://ricjac.github.io//js/ie10-viewport-bug-workaround.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.5.3/jquery.timeago.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+  $(function(){
+    $("time.timeago").timeago();
+  })
+  $("#toggle-btn").click(function(){
+    $("#toggle-content").toggle();
+    if($(this).html() === "☰") {
+        $(this).html("X")
+    } else {
+        $(this).html("☰")
+    }
+  });
+  $(window).resize(function(){
+    if(window.innerWidth > 768) {
+      $(".desktop").removeAttr("style");
+    }
+  });
+</script> 
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-81407550-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

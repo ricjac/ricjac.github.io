@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="icon" href="../../favicon.ico">
+  <meta name="description" content="PART 2: How to secure your Bitcoin TestNet3 Full Node on Arch linux">
+  <meta name="author" content="Richard Pierre">
+
+  <title>PART 2: How to secure your Bitcoin TestNet3 Full Node on Arch linux</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+
+  
+  <link href="https://ricjac.github.io//css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/cs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/fsharp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/ini.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  
+  <link rel="stylesheet" href="https://ricjac.github.io//css/site.css">
+</head>
+
+<body>
+  <div class="container"> 
+<div class="header clearfix">
+    <nav>
+        <ul class="nav nav-pills pull-right">
+            
+            <li role="presentation"><a href="https://ricjac.github.io/categories/blog">Blog</a></li>
+            
+            <li role="presentation"><a href="https://ricjac.github.io/categories/cryptocurrency">Cryptocurrency</a></li>
+            
+            <li role="presentation"><a href="https://ricjac.github.io/site/about/">About</a></li>
+        </ul>
+    </nav>
+    <h3 class="text-muted"><a href="https://ricjac.github.io/">RICJAC</a></h3>
+</div> 
+
+<div class="content">
+    <div class="post">
+        <div class="post-title">
+            <h1>PART 2: How to secure your Bitcoin TestNet3 Full Node on Arch linux</h1>
+            
+<p>
+    <sup>
+        Created <time datetime='2017-12-11' class="post-list timeago">2017-12-11T00:00:00Z</time>
+         
+    </sup>
+</p>
+        </div>
+
+        <div class="post-content">
+            <nav id="TableOfContents">
+<ul>
+<li><a href="#intro">Intro</a></li>
+<li><a href="#setup-a-firewall-uncomplicated-firewall-ufw">Setup a firewall - Uncomplicated Firewall (UFW)</a></li>
+<li><a href="#securing-ssh">Securing SSH</a>
+<ul>
+<li><a href="#sshguard">SSHGuard</a></li>
+</ul></li>
+</ul>
+</nav> 
+
+<h1 id="intro">Intro</h1>
+
+<p>In <a href="https://ricjac.github.io/cryptocurrency/btc-testnet/">PART 1</a> we looked at setting up a Bitcoin full node connected to TestNet3. We should now take some steps to ensure it&rsquo;s secure.</p>
+
+<p>Begin by SSH-ing to the server - as root:</p>
+
+<pre><code class="language-bash"># where xxx.xxx.xxx.xxx is the IP address or host name of the server
+ssh root@xxx.xxx.xxx.xxx
+</code></pre>
+
+<h1 id="setup-a-firewall-uncomplicated-firewall-ufw">Setup a firewall - Uncomplicated Firewall (UFW)</h1>
+
+<p>Let&rsquo;s first lock down all incoming ports except those we want to receive, being:</p>
+
+<ul>
+<li>SSH (Port 22)</li>
+<li>Bitcoin TestNet3 (Port 18332)</li>
+</ul>
+
+<pre><code class="language-bash"># install Uncomplicated Firewall
+pacman -S ufw
+
+# start by blocking all inbound traffic
+ufw default deny
+# Allow SSH - so we can remote to our server
+ufw allow SSH
+# Allow incoming traffic on the default TestNet3 port
+ufw allow 18332
+</code></pre>
+
+<p>Next we will start UFW, and the rules will be applied - if you use a different port for SSH (default: 22), ensure you allow that port, or you will be disconnected.</p>
+
+<pre><code class="language-bash"># start UFW manually - one off
+ufw enable
+
+# SystemD will start UFW automatically if the server is ever restarted
+systemctl enable ufw
+
+# Ensure the rules you added are reflected in the current UFW status
+ufw status
+</code></pre>
+
+<h1 id="securing-ssh">Securing SSH</h1>
+
+<p><strong>IMPORTANT</strong>: If you are going to use a password for authentication on SSH, ensure it&rsquo;s at least 20+ characters long. The safest way is to use an RSA priv/pub key. But I&rsquo;m sticking to a very long password, so that I can still remote in even if I don&rsquo;t have the SSH key on me, but have access to my password manager.</p>
+
+<h2 id="sshguard">SSHGuard</h2>
+
+<p>Install SSHGuard, it&rsquo;s similar to <code>fail2ban</code> (but simpler). It will protect SSH (can be used for other services too) against brute-force attacks.</p>
+
+<pre><code class="language-bash"># Install SSHGuard
+pacman -S sshguard
+
+# enable SSHGuard on system startup, and start now
+systemctl enable sshguard
+systemctl start sshguard
+
+# Edit UFW rules - Modification details below
+nano /etc/ufw/before.rules
+</code></pre>
+
+<p>We now need to let UFW have the ability to pass along DROP control to SSHGuard.</p>
+
+<p><strong>IMPORTANT</strong>: Insert the 2 lines (below) after the existing <code># allow all on loopback</code> section/block</p>
+
+<p>Contents of <strong><em>/etc/ufw/before.rules</em></strong>:</p>
+
+<pre><code class="language-ini"># EXISTING SECTION: allow all on loopback
+-A ufw-before-input -i lo -j ACCEPT
+-A ufw-before-output -o lo -j ACCEPT
+
+# ADD THE FOLLOWING TWO LINES: hand off control for sshd to sshguard
+-N sshguard
+-A ufw-before-input -p tcp --dport 22 -j sshguard
+</code></pre>
+
+<p>Now that UFW is configured to work with SSHGuard, lets restart the UFW service so that it reads in the new configuration:</p>
+
+<pre><code class="language-bash"># Don't use systemctl restart, as ufw needs a second or two to stop, before starting again
+systemctl stop ufw
+systemctl start ufw
+# Check out the status - if you get 
+systemctl status ufw
+</code></pre>
+
+        </div>
+    </div>
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'ricjac';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+</div>
+
+<footer class="footer">
+  <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/4.0/">(CC BY 4.0)</a> <span>Richard Pierre</span>
+  <a href="#" class="pull-right" id="gototop-btn">↑↑</a>
+</footer>
+
+</div>
+
+
+
+<script src="https://ricjac.github.io//js/ie10-viewport-bug-workaround.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.5.3/jquery.timeago.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+  $(function(){
+    $("time.timeago").timeago();
+  })
+  $("#toggle-btn").click(function(){
+    $("#toggle-content").toggle();
+    if($(this).html() === "☰") {
+        $(this).html("X")
+    } else {
+        $(this).html("☰")
+    }
+  });
+  $(window).resize(function(){
+    if(window.innerWidth > 768) {
+      $(".desktop").removeAttr("style");
+    }
+  });
+</script> 
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-81407550-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

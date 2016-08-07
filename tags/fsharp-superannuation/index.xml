@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fsharp Superannuation on RICJAC</title>
+    <link>https://ricjac.github.io/tags/fsharp-superannuation/</link>
+    <description>Recent content in Fsharp Superannuation on RICJAC</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Creative Commons Attribution 4.0 International License</copyright>
+    <lastBuildDate>Wed, 14 Sep 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://ricjac.github.io/tags/fsharp-superannuation/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Visualising Australian Super Performance with F#</title>
+      <link>https://ricjac.github.io/blog/fshapr-analysing-superannuation/</link>
+      <pubDate>Wed, 14 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://ricjac.github.io/blog/fshapr-analysing-superannuation/</guid>
+      <description>Australian Super Performance graphs are available on their website, but just as a simple exercise, lets replicate their graph, using FSharp.Charting.
+Graph generated from Australian Super Website Below is a screenshot of the associated cumulative % change for the period, for the investments shown in the graph above:
+First create a paket dependencies file:
+paket.dependencies
+source https://nuget.org/api/v2 nuget FSharp.Data nuget FSharp.Charting  Run the following command to generate an include script, so you only need to include 1 file, rather than all dependencies.</description>
+    </item>
+    
+  </channel>
+</rss>

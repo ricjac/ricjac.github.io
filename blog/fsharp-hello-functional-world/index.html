@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="icon" href="../../favicon.ico">
+  <meta name="description" content="Hello infinite functional world">
+  <meta name="author" content="Richard Pierre">
+
+  <title>Hello infinite functional world</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+
+  
+  <link href="https://ricjac.github.io//css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/cs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/fsharp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/languages/ini.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  
+  <link rel="stylesheet" href="https://ricjac.github.io//css/site.css">
+</head>
+
+<body>
+  <div class="container"> 
+<div class="header clearfix">
+    <nav>
+        <ul class="nav nav-pills pull-right">
+            
+            <li role="presentation"><a href="https://ricjac.github.io/categories/blog">Blog</a></li>
+            
+            <li role="presentation"><a href="https://ricjac.github.io/categories/cryptocurrency">Cryptocurrency</a></li>
+            
+            <li role="presentation"><a href="https://ricjac.github.io/site/about/">About</a></li>
+        </ul>
+    </nav>
+    <h3 class="text-muted"><a href="https://ricjac.github.io/">RICJAC</a></h3>
+</div> 
+
+<div class="content">
+    <div class="post">
+        <div class="post-title">
+            <h1>Hello infinite functional world</h1>
+            
+<p>
+    <sup>
+        Created <time datetime='2016-09-13' class="post-list timeago">2016-09-13T00:00:00Z</time>
+         
+    </sup>
+</p>
+        </div>
+
+        <div class="post-content">
+             <p>The &lsquo;Hello world&rsquo; of functional programming languages is a recursive function that returns a sequence of Fibonacci numbers.</p>
+
+<p>The implementation below returns an infinite F# sequence, using the type BigInteger, so that the sequence will only stop when the process runs out of memory.</p>
+
+<p><sub><em>Maths.fs</em></sub></p>
+
+<pre><code class="language-fsharp">module NumberSequences = 
+    let fibonacci =
+        let rec fibonacci' (first: bigint) (second: bigint) =
+            let next = first + second
+            seq { 
+                yield next
+                yield! fibonacci' second next
+            }
+        seq {
+            yield bigint(0)
+            yield bigint(1)
+            yield! (fibonacci' (bigint(0)) (bigint(1)))
+        }
+</code></pre>
+
+<p><sub><em>script.fs</em></sub></p>
+
+<pre><code class="language-fsharp">#load &quot;Maths.fs&quot;
+
+let ``First 1000 fibonacci numbers`` = NumberSequences.fibonacci |&gt; Seq.take 1000 |&gt; Seq.toList
+let ``1000th fibonacci number`` = NumberSequences.fibonacci |&gt; Seq.take 1000 |&gt; Seq.last
+</code></pre>
+
+<p><sub><em>Output</em></sub></p>
+
+<pre><code class="language-fsharp">val ( First 1000 fibonacci numbers ) : System.Numerics.BigInteger list =
+  [0; 1; 1; 2; 3; 5; 8; 13; 21; 34; 55; 89; 144; 233; 377; 610; 987; 1597;
+   2584; 4181; 6765; 10946; 17711; 28657; 46368; 75025; 121393; 196418; 317811;
+   514229; 832040; 1346269; 2178309; 3524578; 5702887; 9227465; 14930352;
+   24157817; 39088169; 63245986; 102334155; 165580141; 267914296; 433494437;
+   701408733; 1134903170; 1836311903; 2971215073; 4807526976; 7778742049;
+   12586269025; 20365011074; 32951280099; 53316291173; 86267571272;
+   139583862445; 225851433717; 365435296162; 591286729879; 956722026041;
+   1548008755920; 2504730781961; 4052739537881; 6557470319842; 10610209857723;
+   17167680177565; 27777890035288; 44945570212853; 72723460248141;
+   117669030460994; 190392490709135; 308061521170129; 498454011879264;
+   806515533049393; 1304969544928657; 2111485077978050; 3416454622906707;
+   5527939700884757; 8944394323791464; 14472334024676221; 23416728348467685;
+   37889062373143906; 61305790721611591; 99194853094755497; 160500643816367088;
+   259695496911122585; 420196140727489673; 679891637638612258;
+   1100087778366101931; 1779979416004714189; 2880067194370816120;
+   4660046610375530309; 7540113804746346429; 12200160415121876738;
+   19740274219868223167; 31940434634990099905; 51680708854858323072;
+   83621143489848422977; 135301852344706746049; 218922995834555169026; ...]
+
+val ( 1000th fibonacci number ) : System.Numerics.BigInteger =
+  26863810024485359386146727202142923967616609318986952340123175997617981700247881689338369654483356564191827856161443356312976673642210350324634850410377680367334151172899169723197082763985615764450078474174626
+</code></pre>
+
+        </div>
+    </div>
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'ricjac';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+</div>
+
+<footer class="footer">
+  <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/4.0/">(CC BY 4.0)</a> <span>Richard Pierre</span>
+  <a href="#" class="pull-right" id="gototop-btn">↑↑</a>
+</footer>
+
+</div>
+
+
+
+<script src="https://ricjac.github.io//js/ie10-viewport-bug-workaround.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.5.3/jquery.timeago.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+  $(function(){
+    $("time.timeago").timeago();
+  })
+  $("#toggle-btn").click(function(){
+    $("#toggle-content").toggle();
+    if($(this).html() === "☰") {
+        $(this).html("X")
+    } else {
+        $(this).html("☰")
+    }
+  });
+  $(window).resize(function(){
+    if(window.innerWidth > 768) {
+      $(".desktop").removeAttr("style");
+    }
+  });
+</script> 
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-81407550-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>
