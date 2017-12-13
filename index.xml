@@ -36,10 +36,10 @@ For this exercise I used Linode to create a new Arch linux VM, but any Arch Linu
     
     <item>
       <title>Visualising Australian Super Performance with F#</title>
-      <link>https://ricjac.github.io/blog/fshapr-analysing-superannuation/</link>
+      <link>https://ricjac.github.io/blog/fsharp-analysing-superannuation/</link>
       <pubDate>Wed, 14 Sep 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://ricjac.github.io/blog/fshapr-analysing-superannuation/</guid>
+      <guid>https://ricjac.github.io/blog/fsharp-analysing-superannuation/</guid>
       <description>Australian Super Performance graphs are available on their website, but just as a simple exercise, lets replicate their graph, using FSharp.Charting.
 Graph generated from Australian Super Website Below is a screenshot of the associated cumulative % change for the period, for the investments shown in the graph above:
 First create a paket dependencies file:
