@@ -35,7 +35,7 @@ ufw default allow outgoing
 # Allow SSH - so we can remote to our server
 ufw allow SSH
 # Allow incoming traffic on the default TestNet3 port
-ufw allow 18332
+ufw allow 18333
 ```
 
 Next we will start UFW, and the rules will be applied - if you use a different port for SSH (default: 22), ensure you allow that port, or you will be disconnected.
@@ -67,32 +67,15 @@ pacman -S sshguard
 systemctl enable sshguard
 systemctl start sshguard
 
-# Edit UFW rules - Modification details below
-nano /etc/ufw/before.rules
+# Ensure there were no issues
+systemctl status sshguard
 ```
 
-We now need to let UFW have the ability to pass along DROP control to SSHGuard.
+## Further hardening
 
-**IMPORTANT**: Insert the 2 lines (below) after the existing `# allow all on loopback` section/block
+You can take a few further step to harden your server:
 
-Contents of ***/etc/ufw/before.rules***:
-
-``` ini
-# EXISTING SECTION: allow all on loopback
--A ufw-before-input -i lo -j ACCEPT
--A ufw-before-output -o lo -j ACCEPT
-
-# ADD THE FOLLOWING TWO LINES: hand off control for sshd to sshguard
--N sshguard
--A ufw-before-input -p tcp --dport 22 -j sshguard
-```
-
-Now that UFW is configured to work with SSHGuard, lets restart the UFW service so that it reads in the new configuration:
-
-``` bash
-# Don't use systemctl restart, as ufw needs a second or two to stop, before starting again
-systemctl stop ufw
-systemctl start ufw
-# Check out the status
-systemctl status ufw
-```
+* Forbid root SSH access
+* Only allow SSH keys (no passwords) 
+* Restrict users/group that can SSH (AllowUser/AllowGroup)
+* Restrict SSH access by either IP, Country or City
