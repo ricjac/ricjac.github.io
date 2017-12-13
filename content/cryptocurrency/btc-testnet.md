@@ -12,7 +12,7 @@ description = "Setup a Bitcoin node connected to TestNet3. This is part of a ser
 This is Part 1 in the Cryptocurrency series:
 
 * [PART 1]({{< ref "btc-testnet.md" >}}) - We look at setting up a **Bitcoin** full node connected to TestNet3
-* [PART 2]({{< ref "btc-testnet-security.md" >}}) We put in place some harden strategies to protect against attack
+* [PART 2]({{< ref "btc-testnet-security.md" >}}) - We put in place some hardening strategies to protect against common attack
 * [PART 3]({{< ref "ltc-testnet.md" >}}) - We look at setting up a **Litecoin** full node connected to TestNet3
 
 If you are starting out in learning to program with/in the Bitcoin network, setting up a TestNet full node is a good place to start, and also provides some learning opportunities.

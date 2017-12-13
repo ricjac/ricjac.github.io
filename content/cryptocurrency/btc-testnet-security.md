@@ -5,14 +5,14 @@ draft = false
 categories = ["Cryptocurrency"]
 
 title = "PART 2: How to secure your Bitcoin TestNet3 Full Node on Arch linux"
-description = "Some steps you can take to prevent your server getting hacked"
+description = "We put in place some hardening strategies to protect our server against common attacks"
 +++
 # Intro
 
 This is Part 2 in the Cryptocurrency series:
 
 * [PART 1]({{< ref "btc-testnet.md" >}}) - We look at setting up a **Bitcoin** full node connected to TestNet3
-* [PART 2]({{< ref "btc-testnet-security.md" >}}) We put in place some harden strategies to protect against attack
+* [PART 2]({{< ref "btc-testnet-security.md" >}}) - We put in place some hardening strategies to protect against common attack
 * [PART 3]({{< ref "ltc-testnet.md" >}}) - We look at setting up a **Litecoin** full node connected to TestNet3
 
 Begin by SSH-ing to the server - as root:
