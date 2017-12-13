@@ -19,7 +19,7 @@
       
       <guid>https://ricjac.github.io/cryptocurrency/ltc-testnet/</guid>
       <description>This is Part 3 in the Cryptocurrency series:
- PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 We put in place some harden strategies to protect against attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  Coming soon&amp;hellip;</description>
+ PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 - We put in place some hardening strategies to protect against common attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  Coming soon&amp;hellip;</description>
     </item>
     
     <item>
@@ -29,7 +29,7 @@
       
       <guid>https://ricjac.github.io/cryptocurrency/btc-testnet-security/</guid>
       <description>Intro This is Part 2 in the Cryptocurrency series:
- PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 We put in place some harden strategies to protect against attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  Begin by SSH-ing to the server - as root:
+ PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 - We put in place some hardening strategies to protect against common attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  Begin by SSH-ing to the server - as root:
 # where xxx.xxx.xxx.xxx is the IP address or host name of the server ssh root@xxx.</description>
     </item>
     
@@ -40,7 +40,7 @@
       
       <guid>https://ricjac.github.io/cryptocurrency/btc-testnet/</guid>
       <description>Intro This is Part 1 in the Cryptocurrency series:
- PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 We put in place some harden strategies to protect against attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  If you are starting out in learning to program with/in the Bitcoin network, setting up a TestNet full node is a good place to start, and also provides some learning opportunities.</description>
+ PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 - We put in place some hardening strategies to protect against common attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  If you are starting out in learning to program with/in the Bitcoin network, setting up a TestNet full node is a good place to start, and also provides some learning opportunities.</description>
     </item>
     
     <item>
