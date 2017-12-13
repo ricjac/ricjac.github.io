@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-au</language>
     <copyright>Creative Commons Attribution 4.0 International License</copyright>
-    <lastBuildDate>Mon, 11 Dec 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 13 Dec 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ricjac.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>PART 3: How to setup a Litecoin TestNet Full Node on Arch linux</title>
+      <link>https://ricjac.github.io/cryptocurrency/ltc-testnet/</link>
+      <pubDate>Wed, 13 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://ricjac.github.io/cryptocurrency/ltc-testnet/</guid>
+      <description>This is Part 3 in the Cryptocurrency series:
+ PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 We put in place some harden strategies to protect against attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  Coming soon&amp;hellip;</description>
+    </item>
     
     <item>
       <title>PART 2: How to secure your Bitcoin TestNet3 Full Node on Arch linux</title>
@@ -18,9 +28,9 @@
       <pubDate>Mon, 11 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://ricjac.github.io/cryptocurrency/btc-testnet-security/</guid>
-      <description>Intro In PART 1 we looked at setting up a Bitcoin full node connected to TestNet3. We should now take some steps to ensure it&amp;rsquo;s secure.
-Begin by SSH-ing to the server - as root:
-# where xxx.xxx.xxx.xxx is the IP address or host name of the server ssh root@xxx.xxx.xxx.xxx  Setup a firewall - Uncomplicated Firewall (UFW) Let&amp;rsquo;s first lock down all incoming ports except those we want to receive, being:</description>
+      <description>Intro This is Part 2 in the Cryptocurrency series:
+ PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 We put in place some harden strategies to protect against attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  Begin by SSH-ing to the server - as root:
+# where xxx.xxx.xxx.xxx is the IP address or host name of the server ssh root@xxx.</description>
     </item>
     
     <item>
@@ -29,9 +39,8 @@ Begin by SSH-ing to the server - as root:
       <pubDate>Sun, 10 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://ricjac.github.io/cryptocurrency/btc-testnet/</guid>
-      <description>Intro If you are starting out in learning to program with/in the Bitcoin network, setting up a TestNet full node is a good place to start, and also provides some learning opportunities.
-For this exercise I used Linode to create a new Arch linux VM, but any Arch Linux VPS provider will provide the same experience.
- NOTE: This article was originally written for setting up a Raspberry PI 2, although the Bitcoin daemon ran, every hour or so the PI would crash/lock-up.</description>
+      <description>Intro This is Part 1 in the Cryptocurrency series:
+ PART 1 - We look at setting up a Bitcoin full node connected to TestNet3 PART 2 We put in place some harden strategies to protect against attack PART 3 - We look at setting up a Litecoin full node connected to TestNet3  If you are starting out in learning to program with/in the Bitcoin network, setting up a TestNet full node is a good place to start, and also provides some learning opportunities.</description>
     </item>
     
     <item>

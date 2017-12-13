@@ -7,10 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <link rel="icon" href="../../favicon.ico">
-  <meta name="description" content="PART 2: How to secure your Bitcoin TestNet3 Full Node on Arch linux">
+  <meta name="description" content="PART 3: How to setup a Litecoin TestNet Full Node on Arch linux">
   <meta name="author" content="Richard Pierre">
 
-  <title>PART 2: How to secure your Bitcoin TestNet3 Full Node on Arch linux</title>
+  <title>PART 3: How to setup a Litecoin TestNet Full Node on Arch linux</title>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
@@ -53,32 +53,18 @@
 <div class="content">
     <div class="post">
         <div class="post-title">
-            <h1>PART 2: How to secure your Bitcoin TestNet3 Full Node on Arch linux</h1>
+            <h1>PART 3: How to setup a Litecoin TestNet Full Node on Arch linux</h1>
             
 <p>
     <sup>
-        Created <time datetime='2017-12-11' class="post-list timeago">2017-12-11T00:00:00Z</time>
+        Created <time datetime='2017-12-13' class="post-list timeago">2017-12-13T00:00:00Z</time>
          
     </sup>
 </p>
         </div>
 
         <div class="post-content">
-            <nav id="TableOfContents">
-<ul>
-<li><a href="#intro">Intro</a></li>
-<li><a href="#setup-a-firewall-uncomplicated-firewall-ufw">Setup a firewall - Uncomplicated Firewall (UFW)</a></li>
-<li><a href="#securing-ssh">Securing SSH</a>
-<ul>
-<li><a href="#sshguard">SSHGuard</a></li>
-<li><a href="#further-hardening">Further hardening</a></li>
-</ul></li>
-</ul>
-</nav> 
-
-<h1 id="intro">Intro</h1>
-
-<p>This is Part 2 in the Cryptocurrency series:</p>
+             <p>This is Part 3 in the Cryptocurrency series:</p>
 
 <ul>
 <li><a href="https://ricjac.github.io/cryptocurrency/btc-testnet/">PART 1</a> - We look at setting up a <strong>Bitcoin</strong> full node connected to TestNet3</li>
@@ -86,74 +72,7 @@
 <li><a href="https://ricjac.github.io/cryptocurrency/ltc-testnet/">PART 3</a> - We look at setting up a <strong>Litecoin</strong> full node connected to TestNet3</li>
 </ul>
 
-<p>Begin by SSH-ing to the server - as root:</p>
-
-<pre><code class="language-bash"># where xxx.xxx.xxx.xxx is the IP address or host name of the server
-ssh root@xxx.xxx.xxx.xxx
-</code></pre>
-
-<h1 id="setup-a-firewall-uncomplicated-firewall-ufw">Setup a firewall - Uncomplicated Firewall (UFW)</h1>
-
-<p>Let&rsquo;s first lock down all incoming ports except those we want to receive, being:</p>
-
-<ul>
-<li>SSH (Port 22)</li>
-<li>Bitcoin TestNet3 (Port 18332)</li>
-</ul>
-
-<pre><code class="language-bash"># install Uncomplicated Firewall
-pacman -S ufw
-
-# start by blocking all inbound traffic
-ufw default deny incoming
-ufw default allow outgoing
-# Allow SSH - so we can remote to our server
-ufw allow SSH
-# Allow incoming traffic on the default TestNet3 port
-ufw allow 18333
-</code></pre>
-
-<p>Next we will start UFW, and the rules will be applied - if you use a different port for SSH (default: 22), ensure you allow that port, or you will be disconnected.</p>
-
-<pre><code class="language-bash"># start UFW manually - one off
-ufw enable
-
-# SystemD will start UFW automatically if the server is ever restarted
-systemctl enable ufw
-
-# Ensure the rules you added are reflected in the current UFW status
-ufw status
-</code></pre>
-
-<h1 id="securing-ssh">Securing SSH</h1>
-
-<p><strong>IMPORTANT</strong>: If you are going to use a password for authentication on SSH, ensure it&rsquo;s at least 20+ characters long. The safest way is to use an RSA priv/pub key. But I&rsquo;m sticking to a very long password, so that I can still remote in even if I don&rsquo;t have the SSH key on me, but have access to my password manager.</p>
-
-<h2 id="sshguard">SSHGuard</h2>
-
-<p>Install SSHGuard, it&rsquo;s similar to <code>fail2ban</code> (but simpler). It will protect SSH (can be used for other services too) against brute-force attacks.</p>
-
-<pre><code class="language-bash"># Install SSHGuard
-pacman -S sshguard
-
-# enable SSHGuard on system startup, and start now
-systemctl enable sshguard
-systemctl start sshguard
-
-# Ensure there were no issues
-systemctl status sshguard
-</code></pre>
-
-<h2 id="further-hardening">Further hardening</h2>
-
-<p>You can take a few further step to harden your server:</p>
-
-<ul>
-<li>Forbid root SSH access</li>
-<li>Only allow SSH keys (no passwords)</li>
-<li>Restrict users/group that can SSH (AllowUser/AllowGroup)</li>
-<li>Restrict SSH access by either IP, Country or City</li>
-</ul>
+<p>Coming soon&hellip;</p>
 
         </div>
     </div>
