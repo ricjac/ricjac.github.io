@@ -71,6 +71,7 @@
 <li><a href="#securing-ssh">Securing SSH</a>
 <ul>
 <li><a href="#sshguard">SSHGuard</a></li>
+<li><a href="#further-hardening">Further hardening</a></li>
 </ul></li>
 </ul>
 </nav> 
@@ -103,7 +104,7 @@ ufw default allow outgoing
 # Allow SSH - so we can remote to our server
 ufw allow SSH
 # Allow incoming traffic on the default TestNet3 port
-ufw allow 18332
+ufw allow 18333
 </code></pre>
 
 <p>Next we will start UFW, and the rules will be applied - if you use a different port for SSH (default: 22), ensure you allow that port, or you will be disconnected.</p>
@@ -133,33 +134,20 @@ pacman -S sshguard
 systemctl enable sshguard
 systemctl start sshguard
 
-# Edit UFW rules - Modification details below
-nano /etc/ufw/before.rules
+# Ensure there were no issues
+systemctl status sshguard
 </code></pre>
 
-<p>We now need to let UFW have the ability to pass along DROP control to SSHGuard.</p>
+<h2 id="further-hardening">Further hardening</h2>
 
-<p><strong>IMPORTANT</strong>: Insert the 2 lines (below) after the existing <code># allow all on loopback</code> section/block</p>
+<p>You can take a few further step to harden your server:</p>
 
-<p>Contents of <strong><em>/etc/ufw/before.rules</em></strong>:</p>
-
-<pre><code class="language-ini"># EXISTING SECTION: allow all on loopback
--A ufw-before-input -i lo -j ACCEPT
--A ufw-before-output -o lo -j ACCEPT
-
-# ADD THE FOLLOWING TWO LINES: hand off control for sshd to sshguard
--N sshguard
--A ufw-before-input -p tcp --dport 22 -j sshguard
-</code></pre>
-
-<p>Now that UFW is configured to work with SSHGuard, lets restart the UFW service so that it reads in the new configuration:</p>
-
-<pre><code class="language-bash"># Don't use systemctl restart, as ufw needs a second or two to stop, before starting again
-systemctl stop ufw
-systemctl start ufw
-# Check out the status
-systemctl status ufw
-</code></pre>
+<ul>
+<li>Forbid root SSH access</li>
+<li>Only allow SSH keys (no passwords)</li>
+<li>Restrict users/group that can SSH (AllowUser/AllowGroup)</li>
+<li>Restrict SSH access by either IP, Country or City</li>
+</ul>
 
         </div>
     </div>
