@@ -12,6 +12,6 @@ This is Part 3 in the Cryptocurrency series:
 
 * [PART 1]({{< ref "btc-testnet.md" >}}) - We look at setting up a **Bitcoin** full node connected to TestNet3
 * [PART 2]({{< ref "btc-testnet-security.md" >}}) - We put in place some hardening strategies to protect against common attack
-* [PART 3]({{< ref "ltc-testnet.md" >}}) - We look at setting up a **Litecoin** full node connected to TestNet3
+* [PART 3]({{< ref "ltc-testnet.md" >}}) - We look at setting up a **Litecoin** full node connected to TestNet
 
 Coming soon...
