@@ -33,9 +33,9 @@ Make sure all packages are up to date:
 pacman -Syu
 ```
 
-**Arch Linux User Repository (AUR)**
-
 This next step differs from the Bitcoin node setup, we are not going to use the official Litecoin package from an Arch Linux mirror - that's because, one does not exist. We can either install the Litecoin daemon manually or because we are using Arch Linux, the Arch Linux User Repository (AUR) might have a package we can use.
+
+**Arch Linux User Repository (AUR)**
 
 The closest AUR I could find was [bitcoin-bin (AUR)](https://aur.archlinux.org/packages/litecoin-bin) but this AUR included all the QT (Cross platform UI framework) dependencies. We don't need or want the QT dependencies as we are running a headless server. So I repurposed an out-of-date and abandoned AUR to our needs, meet [bitcoin-daemon (AUR)](https://aur.archlinux.org/packages/litecoin-daemon/)
 
