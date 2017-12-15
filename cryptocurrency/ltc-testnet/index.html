@@ -101,9 +101,9 @@ ssh root@xxx.xxx.xxx.xxx
 <pre><code class="language-bash">pacman -Syu
 </code></pre>
 
-<p><strong>Arch Linux User Repository (AUR)</strong></p>
-
 <p>This next step differs from the Bitcoin node setup, we are not going to use the official Litecoin package from an Arch Linux mirror - that&rsquo;s because, one does not exist. We can either install the Litecoin daemon manually or because we are using Arch Linux, the Arch Linux User Repository (AUR) might have a package we can use.</p>
+
+<p><strong>Arch Linux User Repository (AUR)</strong></p>
 
 <p>The closest AUR I could find was <a href="https://aur.archlinux.org/packages/litecoin-bin">bitcoin-bin (AUR)</a> but this AUR included all the QT (Cross platform UI framework) dependencies. We don&rsquo;t need or want the QT dependencies as we are running a headless server. So I repurposed an out-of-date and abandoned AUR to our needs, meet <a href="https://aur.archlinux.org/packages/litecoin-daemon/">bitcoin-daemon (AUR)</a></p>
 
