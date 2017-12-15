@@ -81,12 +81,14 @@
 <ul>
 <li><a href="https://ricjac.github.io/cryptocurrency/btc-testnet/">PART 1</a> - We look at setting up a <strong>Bitcoin</strong> full node connected to TestNet3</li>
 <li><a href="https://ricjac.github.io/cryptocurrency/btc-testnet-security/">PART 2</a> - We put in place some hardening strategies to protect against common attack</li>
-<li><a href="https://ricjac.github.io/cryptocurrency/ltc-testnet/">PART 3</a> - We look at setting up a <strong>Litecoin</strong> full node connected to TestNet</li>
+<li><a href="https://ricjac.github.io/cryptocurrency/ltc-testnet/">PART 3</a> - We look at setting up a <strong>Litecoin</strong> full node connected to TestNet4</li>
 </ul>
 
 <p>Since this article is a continuation from Part 1 and 2, it is assumed that you have a Bitcoin TestNet node (Part 1) running already and you&rsquo;ve made your server secure (Part 2).</p>
 
 <p>Setting up a Litecoin full node connected to TestNet is pretty much the same as setting up a BTC node, so if you&rsquo;ve been through Part 1, this will all look very familiar.</p>
+
+<p>You will notice that the documentation for litecoind and litecoin-cli is very lite-on/non-existent (pardon the pun), this is because the Litecoin source code was forked from the Bitcoin source, and the Litecoin development team has been applying Bitcoin source updates/changes to the Litecoin source over time. So even though Litecoin and Bitcoin have different &lsquo;configuration&rsquo; (block times, address prefix, PoW algorithm, &hellip;) the tools are the same - namely bitcoind/litecoind &amp; bitcoin-cli/litecoin-cli, so we can refer to the Bitcoin documentation where there is a gap in the Litecoin documentation.</p>
 
 <h1 id="instructions">Instructions</h1>
 
@@ -105,7 +107,7 @@ ssh root@xxx.xxx.xxx.xxx
 
 <p><strong>Arch Linux User Repository (AUR)</strong></p>
 
-<p>The closest AUR I could find was <a href="https://aur.archlinux.org/packages/litecoin-bin">bitcoin-bin (AUR)</a> but this AUR included all the QT (Cross platform UI framework) dependencies. We don&rsquo;t need or want the QT dependencies as we are running a headless server. So I repurposed an out-of-date and abandoned AUR to our needs, meet <a href="https://aur.archlinux.org/packages/litecoin-daemon/">bitcoin-daemon (AUR)</a></p>
+<p>The closest AUR I could find was <a href="https://aur.archlinux.org/packages/litecoin-bin">litecoin-bin (AUR)</a> but this AUR included all the QT (Cross platform UI framework) dependencies. We don&rsquo;t need or want the QT dependencies as we are running a headless server. So I repurposed an out-of-date and abandoned AUR to our needs, meet <a href="https://aur.archlinux.org/packages/litecoin-daemon/">litecoin-daemon (AUR)</a></p>
 
 <p><strong>WARNING</strong> Do NOT TRUST AURs - check out the PKGBUILD file before installing, and make sure it does what the label says it does, even though this AUR is authored by me - so check it out!</p>
 
@@ -135,7 +137,7 @@ pacman -Syyu
 pacman -S yaourt
 </code></pre>
 
-<p><strong>Note:</strong> Yaourt does not allow installation of packages when you are root, so this is a good time to create our LTC service user.</p>
+<p><strong>Note:</strong> Yaourt does not allow installation of packages when you are root, so this is a good time to create our ltc service user.</p>
 
 <p>Let&rsquo;s now create the user account that our litecoin daemon will use:</p>
 
@@ -168,6 +170,14 @@ nano ~/.litecoin/litecoin.conf
 # paste config [See below]
 nano ~/.bashrc
 # paste aliases [See below]
+</code></pre>
+
+<p>Let&rsquo;s now install the litecoin-daemon AUR</p>
+
+<pre><code class="language-bash">yaourt litecoin-daemon
+# Only one package should be show with the name `litecoin-daemon`, so press '1'
+# Then follow the prompts. 
+# The final step will require you to provide the root password.
 </code></pre>
 
 <p>That&rsquo;s all we need to do with the ltc user.</p>
