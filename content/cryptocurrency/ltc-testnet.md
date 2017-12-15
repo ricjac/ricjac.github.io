@@ -33,7 +33,7 @@ Make sure all packages are up to date:
 pacman -Syu
 ```
 
-## Arch Linux User Repository (AUR)
+**Arch Linux User Repository (AUR)**
 
 This next step differs from the Bitcoin node setup, we are not going to use the official Litecoin package from an Arch Linux mirror - that's because, one does not exist. We can either install the Litecoin daemon manually or because we are using Arch Linux, the Arch Linux User Repository (AUR) might have a package we can use.
 
@@ -72,8 +72,6 @@ pacman -S yaourt
 
 **Note:** Yaourt does not allow installation of packages when you are root, so this is a good time to create our LTC service user.
 
-## LTC service user
-
 Let's now create the user account that our litecoin daemon will use:
 
 ``` bash
@@ -85,8 +83,6 @@ passwd ltc
 mkhomedir_helper ltc
 ```
 
-## Data directory
-
 Next we'll need somewhere for the Litecoin daemon to store the blockchain and other data:
 
 ``` bash
@@ -97,8 +93,6 @@ chown ltc: /ltc
 # Modify permission of directory /ltc for owner to have write access
 sudo chmod u+w /ltc
 ```
-
-## Daemon config + bash aliases
 
 Now, we'll switch to the ltc user and setup the daemon configuration and setup some bash aliases:
 
@@ -121,14 +115,12 @@ That's all we need to do with the ltc user.
 exit
 ```
 
-## Open Litecoin TestNet port
+Open Litecoin TestNet port on UFW (See Part 2 of this series if you don't know what this means)
 
 ``` bash
 ufw allow 19335
 ufw status
 ```
-
-## Add systemd litecoin service
 
 We now want to create a new systemd service, that starts automatically when the VM starts:
 
@@ -145,6 +137,37 @@ systemctl start ltc
 # Check it's running
 systemctl status ltc
 ```
+
+The Litecoin daemon is running now, so let's query it with the CLI:
+
+``` bash
+# switch to ltc service account
+su - ltc
+# Display network details
+ltc-net
+# Display block details (index, blocks, ..)
+ltc-block
+```
+
+NOTE: It may take up to a minute before the daemon will allow requests on startup, whether it's the first time or after it's been running for days. This message indicates it's loading the index, try again in a few moments:
+
+``` bash
+error code: -28
+error message:
+Loading block index...
+```
+
+NOTE: It took about 30 minutes for the node to catchup to the current height. And you'll need about 500MB of storage (as of the 15th December 2017):
+
+``` bash
+[ltc@localhost ~]$ du /ltc -h
+16M     /ltc/testnet4/chainstate
+70M     /ltc/testnet4/blocks/index
+409M    /ltc/testnet4/blocks
+455M    /ltc/testnet4
+455M    /ltc
+```
+
 
 ---
 
