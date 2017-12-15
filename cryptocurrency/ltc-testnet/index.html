@@ -64,7 +64,27 @@
         </div>
 
         <div class="post-content">
-             <p>This is Part 3 in the Cryptocurrency series:</p>
+            <nav id="TableOfContents">
+<ul>
+<li><a href="#instructions">Instructions</a>
+<ul>
+<li><a href="#arch-linux-user-repository-aur">Arch Linux User Repository (AUR)</a></li>
+<li><a href="#ltc-service-user">LTC service user</a></li>
+<li><a href="#data-directory">Data directory</a></li>
+<li><a href="#daemon-config-bash-aliases">Daemon config + bash aliases</a></li>
+<li><a href="#open-litecoin-testnet-port">Open Litecoin TestNet port</a></li>
+<li><a href="#add-systemd-litecoin-service">Add systemd litecoin service</a></li>
+</ul></li>
+<li><a href="#contents-of-files">Contents of files</a>
+<ul>
+<li><a href="#litecoin-litecoin-conf">~/.litecoin/litecoin.conf</a></li>
+<li><a href="#bashrc">~/.bashrc</a></li>
+<li><a href="#etc-systemd-system-ltc-service">/etc/systemd/system/ltc.service</a></li>
+</ul></li>
+</ul>
+</nav> 
+
+<p>This is Part 3 in the Cryptocurrency series:</p>
 
 <ul>
 <li><a href="https://ricjac.github.io/cryptocurrency/btc-testnet/">PART 1</a> - We look at setting up a <strong>Bitcoin</strong> full node connected to TestNet3</li>
@@ -72,7 +92,203 @@
 <li><a href="https://ricjac.github.io/cryptocurrency/ltc-testnet/">PART 3</a> - We look at setting up a <strong>Litecoin</strong> full node connected to TestNet</li>
 </ul>
 
-<p>Coming soon&hellip;</p>
+<p>Since this article is a continuation from Part 1 and 2, it is assumed that you have a Bitcoin TestNet node (Part 1) running already and you&rsquo;ve made your server secure (Part 2).</p>
+
+<p>Setting up a Litecoin full node connected to TestNet is pretty much the same as setting up a BTC node, so if you&rsquo;ve been through Part 1, this will all look very familiar.</p>
+
+<h1 id="instructions">Instructions</h1>
+
+<p>Begin by SSH-ing to the server - as root:</p>
+
+<pre><code class="language-bash"># where xxx.xxx.xxx.xxx is the IP address or host name of the server
+ssh root@xxx.xxx.xxx.xxx
+</code></pre>
+
+<p>Make sure all packages are up to date:</p>
+
+<pre><code class="language-bash">pacman -Syu
+</code></pre>
+
+<h2 id="arch-linux-user-repository-aur">Arch Linux User Repository (AUR)</h2>
+
+<p>This next step differs from the Bitcoin node setup, we are not going to use the official Litecoin package from an Arch Linux mirror - that&rsquo;s because, one does not exist. We can either install the Litecoin daemon manually or because we are using Arch Linux, the Arch Linux User Repository (AUR) might have a package we can use.</p>
+
+<p>The closest AUR I could find was <a href="https://aur.archlinux.org/packages/litecoin-bin">bitcoin-bin (AUR)</a> but this AUR included all the QT (Cross platform UI framework) dependencies. We don&rsquo;t need or want the QT dependencies as we are running a headless server. So I repurposed an out-of-date and abandoned AUR to our needs, meet <a href="https://aur.archlinux.org/packages/litecoin-daemon/">bitcoin-daemon (AUR)</a></p>
+
+<p><strong>WARNING</strong> Do NOT TRUST AURs - check out the PKGBUILD file before installing, and make sure it does what the label says it does, even though this AUR is authored by me - so check it out!</p>
+
+<p>The easiest way to install/update/remove AURs is to use yaourt. If you don&rsquo;t have yaourt installed, he&rsquo;s how to do it:</p>
+
+<pre><code class="language-bash"># Check it's not already installed
+# If it's not installed you should get this message: &quot;yaourt: command not found&quot;
+yaourt
+
+# edit the pacman configuration file
+nano /etc/pacman.conf
+# paste '[archlinuxfr]' block, at the end of the file  - [see below]
+</code></pre>
+
+<p>Add this at the end of /etc/pacman.conf</p>
+
+<pre><code class="language-ini">[archlinuxfr]
+ SigLevel = Never
+ Server = http://repo.archlinux.fr/$arch
+</code></pre>
+
+<p>Now we can install yaourt:</p>
+
+<pre><code class="language-bash"># Force update the package databases
+pacman -Syyu
+# install yaourt
+pacman -S yaourt
+</code></pre>
+
+<p><strong>Note:</strong> Yaourt does not allow installation of packages when you are root, so this is a good time to create our LTC service user.</p>
+
+<h2 id="ltc-service-user">LTC service user</h2>
+
+<p>Let&rsquo;s now create the user account that our litecoin daemon will use:</p>
+
+<pre><code class="language-bash">useradd ltc
+passwd ltc
+# enter password twice
+
+# create a home directory
+mkhomedir_helper ltc
+</code></pre>
+
+<h2 id="data-directory">Data directory</h2>
+
+<p>Next we&rsquo;ll need somewhere for the Litecoin daemon to store the blockchain and other data:</p>
+
+<pre><code class="language-bash"># Create directory /ltc
+mkdir /ltc
+# Change owner of directory /ltc to ltc (user)
+chown ltc: /ltc
+# Modify permission of directory /ltc for owner to have write access
+sudo chmod u+w /ltc
+</code></pre>
+
+<h2 id="daemon-config-bash-aliases">Daemon config + bash aliases</h2>
+
+<p>Now, we&rsquo;ll switch to the ltc user and setup the daemon configuration and setup some bash aliases:</p>
+
+<pre><code class="language-bash"># switch to ltc service account
+su - ltc
+# Create the directory that the Litecoin daemon searches for a configuration file (if not specified)
+mkdir .litecoin
+
+nano ~/.litecoin/litecoin.conf
+# paste config [See below]
+nano ~/.bashrc
+# paste aliases [See below]
+</code></pre>
+
+<p>That&rsquo;s all we need to do with the ltc user.</p>
+
+<pre><code class="language-bash"># exit back to root
+exit
+</code></pre>
+
+<h2 id="open-litecoin-testnet-port">Open Litecoin TestNet port</h2>
+
+<pre><code class="language-bash">ufw allow 19335
+ufw status
+</code></pre>
+
+<h2 id="add-systemd-litecoin-service">Add systemd litecoin service</h2>
+
+<p>We now want to create a new systemd service, that starts automatically when the VM starts:</p>
+
+<pre><code class="language-bash"># the ltc.service file doesn't exist yet, but nano will create it with the contents we paste into it
+nano /etc/systemd/system/ltc.service
+# paste ltc service definition [See below]
+
+# enable at system startup
+systemctl enable ltc
+# start the Litecoin service now
+systemctl start ltc
+
+# Check it's running
+systemctl status ltc
+</code></pre>
+
+<hr />
+
+<h1 id="contents-of-files">Contents of files</h1>
+
+<h2 id="litecoin-litecoin-conf">~/.litecoin/litecoin.conf</h2>
+
+<p>All litecoind configuration options are defined (same as bitcoind): <a href="https://en.bitcoin.it/wiki/Running_Bitcoin">here</a></p>
+
+<pre><code class="language-ini">##
+## litecoin.conf configuration file. Lines beginning with # are comments.
+##
+
+# IMPORTANT: do not use the daemon's wallet
+disablewallet=1
+
+datadir=/ltc
+
+# Network-related settings:
+
+# Run on the test network instead of the real lite network.
+testnet=1
+
+# Listening mode, enabled by default except when 'connect' is being used. Port 19335 (TestNet4)
+listen=1
+
+#
+# JSON-RPC options (for controlling a running Litecoin/litecoind process)
+#
+
+# server=1 tells litecoind to accept JSON-RPC commands
+server=1
+# Accept public REST requests (default: 0)
+rest=0
+# RPC username or password is not specified, so a cookie is written to the /ltc/testnet4 directory for the CLI to use for auth
+</code></pre>
+
+<hr />
+
+<h2 id="bashrc">~/.bashrc</h2>
+
+<p>All litecoin-cli options are the same as the bitcoin-cli, defined: <a href="https://bitcoin.org/en/developer-reference#rpc-quick-reference">here</a></p>
+
+<pre><code class="language-bash">alias ltc-start='litecoind -daemon'
+alias ltc-stop='litecoin-cli stop'
+alias ltc-block='litecoin-cli getblockchaininfo'
+alias ltc-net='litecoin-cli getnetworkinfo'
+alias ltc-mempool='litecoin-cli getrawmempool'
+alias ltc-mempoolall='litecoin-cli getrawmempool true'
+</code></pre>
+
+<hr />
+
+<h2 id="etc-systemd-system-ltc-service">/etc/systemd/system/ltc.service</h2>
+
+<pre><code class="language-ini"># To edit use:
+# $ systemctl edit litecoind.service
+# See &quot;man systemd.service&quot; for details.
+
+[Unit]
+Description=Litecoin TestNet daemon
+After=network.target
+
+[Service]
+ExecStart=/bin/litecoind -daemon
+# Creates /run/litecoind owned by ltc
+RuntimeDirectory=litecoind
+# user can be a service account
+User=ltc
+Type=forking
+PIDFile=/ltc/testnet4/litecoin.pid
+Restart=on-failure
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
 
         </div>
     </div>
