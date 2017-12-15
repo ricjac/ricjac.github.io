@@ -66,15 +66,7 @@
         <div class="post-content">
             <nav id="TableOfContents">
 <ul>
-<li><a href="#instructions">Instructions</a>
-<ul>
-<li><a href="#arch-linux-user-repository-aur">Arch Linux User Repository (AUR)</a></li>
-<li><a href="#ltc-service-user">LTC service user</a></li>
-<li><a href="#data-directory">Data directory</a></li>
-<li><a href="#daemon-config-bash-aliases">Daemon config + bash aliases</a></li>
-<li><a href="#open-litecoin-testnet-port">Open Litecoin TestNet port</a></li>
-<li><a href="#add-systemd-litecoin-service">Add systemd litecoin service</a></li>
-</ul></li>
+<li><a href="#instructions">Instructions</a></li>
 <li><a href="#contents-of-files">Contents of files</a>
 <ul>
 <li><a href="#litecoin-litecoin-conf">~/.litecoin/litecoin.conf</a></li>
@@ -109,7 +101,7 @@ ssh root@xxx.xxx.xxx.xxx
 <pre><code class="language-bash">pacman -Syu
 </code></pre>
 
-<h2 id="arch-linux-user-repository-aur">Arch Linux User Repository (AUR)</h2>
+<p><strong>Arch Linux User Repository (AUR)</strong></p>
 
 <p>This next step differs from the Bitcoin node setup, we are not going to use the official Litecoin package from an Arch Linux mirror - that&rsquo;s because, one does not exist. We can either install the Litecoin daemon manually or because we are using Arch Linux, the Arch Linux User Repository (AUR) might have a package we can use.</p>
 
@@ -145,8 +137,6 @@ pacman -S yaourt
 
 <p><strong>Note:</strong> Yaourt does not allow installation of packages when you are root, so this is a good time to create our LTC service user.</p>
 
-<h2 id="ltc-service-user">LTC service user</h2>
-
 <p>Let&rsquo;s now create the user account that our litecoin daemon will use:</p>
 
 <pre><code class="language-bash">useradd ltc
@@ -157,8 +147,6 @@ passwd ltc
 mkhomedir_helper ltc
 </code></pre>
 
-<h2 id="data-directory">Data directory</h2>
-
 <p>Next we&rsquo;ll need somewhere for the Litecoin daemon to store the blockchain and other data:</p>
 
 <pre><code class="language-bash"># Create directory /ltc
@@ -168,8 +156,6 @@ chown ltc: /ltc
 # Modify permission of directory /ltc for owner to have write access
 sudo chmod u+w /ltc
 </code></pre>
-
-<h2 id="daemon-config-bash-aliases">Daemon config + bash aliases</h2>
 
 <p>Now, we&rsquo;ll switch to the ltc user and setup the daemon configuration and setup some bash aliases:</p>
 
@@ -190,13 +176,11 @@ nano ~/.bashrc
 exit
 </code></pre>
 
-<h2 id="open-litecoin-testnet-port">Open Litecoin TestNet port</h2>
+<p>Open Litecoin TestNet port on UFW (See Part 2 of this series if you don&rsquo;t know what this means)</p>
 
 <pre><code class="language-bash">ufw allow 19335
 ufw status
 </code></pre>
-
-<h2 id="add-systemd-litecoin-service">Add systemd litecoin service</h2>
 
 <p>We now want to create a new systemd service, that starts automatically when the VM starts:</p>
 
@@ -211,6 +195,33 @@ systemctl start ltc
 
 # Check it's running
 systemctl status ltc
+</code></pre>
+
+<p>The Litecoin daemon is running now, so let&rsquo;s query it with the CLI:</p>
+
+<pre><code class="language-bash"># switch to ltc service account
+su - ltc
+# Display network details
+ltc-net
+# Display block details (index, blocks, ..)
+ltc-block
+</code></pre>
+
+<p>NOTE: It may take up to a minute before the daemon will allow requests on startup, whether it&rsquo;s the first time or after it&rsquo;s been running for days. This message indicates it&rsquo;s loading the index, try again in a few moments:</p>
+
+<pre><code class="language-bash">error code: -28
+error message:
+Loading block index...
+</code></pre>
+
+<p>NOTE: It took about 30 minutes for the node to catchup to the current height. And you&rsquo;ll need about 500MB of storage (as of the 15th December 2017):</p>
+
+<pre><code class="language-bash">[ltc@localhost ~]$ du /ltc -h
+16M     /ltc/testnet4/chainstate
+70M     /ltc/testnet4/blocks/index
+409M    /ltc/testnet4/blocks
+455M    /ltc/testnet4
+455M    /ltc
 </code></pre>
 
 <hr />
